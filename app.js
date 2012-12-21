@@ -14,7 +14,10 @@
 		now = new Date()
 		
 		if ( next_friday.getDate() === now.getDate() && now.getHours() >= 16 ) {
-			document.querySelector(".dance").innerHTML = "PARTY!";
+			var party_container = document.querySelector(".dance")
+			party_container.innerHTML = "PARTY!";
+			if ( now % 2 === 0 )
+				party_container.style.color = "rgb(" + (Math.floor(Math.random() * 255)) + ", " + (Math.floor(Math.random() * 255)) + ", " + (Math.floor(Math.random() * 255)) + ")";
 			return;
 		}
 		
