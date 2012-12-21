@@ -1,0 +1,39 @@
+* { margin: 0; padding: 0; }
+
+body {
+	font-size: 46px;
+	color: #444;
+	background: #000 url(bar_cover.png) center bottom no-repeat;
+	height: 100%;
+}
+
+#countdown {
+	font-family: "PT Sans", sans-serif;
+	width: 800px;
+	text-align: center;
+	margin: 0 auto;
+	padding-top: 5%;
+	font-size: 0px;
+}
+
+#countdown .labels span {
+	font-size: 22px;
+	color: #ddd;
+}
+
+#countdown .counters span {
+	font-size: 46px;
+	color: #fff;
+}
+
+#countdown .row span {
+	display: inline-block;
+	text-align: center;
+	width: 140px;
+}
+
+#countdown .dance {
+	font-size: 120px;
+	font-weight: bold;
+	color: lightgreen;
+}
