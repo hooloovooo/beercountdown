@@ -17,12 +17,12 @@ body {
 }
 
 #countdown .labels span {
-	font-size: 22px;
+	font-size: 30px;
 	color: #ddd;
 }
 
 #countdown .counters span {
-	font-size: 46px;
+	font-size: 90px;
 	color: #fff;
 }
 
@@ -36,4 +36,5 @@ body {
 	font-size: 120px;
 	font-weight: bold;
 	color: lightgreen;
+	display: none;
 }

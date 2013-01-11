@@ -12,14 +12,31 @@
 	
 	var render_loop = function() {
 		now = new Date()
+		var text = document.querySelectorAll(".row");
+		var party_container = document.querySelector(".dance");
 		
-		if ( next_friday.getDate() === now.getDate() && now.getHours() >= 16 ) {
-			var party_container = document.querySelector(".dance")
-			party_container.innerHTML = "PARTY!";
+		if ( next_friday.getDate() === now.getDate() && now.getTime() > next_friday.getTime() ) {			
+			for ( var i = 0, il = text.length; i < il; i++ ) {
+				var el = text[i];
+				
+				el.style.display = "none";
+			}
+			
+			party_container.style.display = "block";
 			if ( now % 2 === 0 )
 				party_container.style.color = "rgb(" + (Math.floor(Math.random() * 255)) + ", " + (Math.floor(Math.random() * 255)) + ", " + (Math.floor(Math.random() * 255)) + ")";
+			
+			
+			
 			return;
 		}
+		for ( var i = 0, il = text.length; i < il; i++ ) {
+			var el = text[i];
+			
+			el.style.display = "block";
+		}
+		party_container.style.display = "none";
+		
 		
 		var diff = next_friday - now;
 	
@@ -48,6 +65,7 @@
 
 	var now = new Date(),
 		next_friday = find_next_friday();
+		next_friday = new Date( new Date().getTime() + 5000 );
 
 	next_friday.setHours(16);
 	next_friday.setMinutes(00);
