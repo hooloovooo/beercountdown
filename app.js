@@ -1,21 +1,48 @@
 (function( undefined ) {
-	var find_next_friday = function() {
-		var date = new Date();
-		
-		for ( var i = 0; i < 8; i++ ) {
-			if ( date.getDay() === 5 )
-				return date;
 
-			else date.setDate(date.getDate()+1);
+	var Counter = function( options ) {
+		if (!options) options = {};
+
+
+		this.target_day    = options.target_day    || 5;
+		this.target_hour   = options.target_hour   || 16;
+		this.target_minute = options.target_minute || 00;
+		this.target_second = options.target_second || 00;
+		
+		this.target_time = options.target_time || this.calculate_target_time();
+		this.events      = options.events      || [];
+
+		this.day_el    = options.day_el    || "#countdown .days";
+		this.hour_el   = options.hour_el   || "#countdown .hours";
+		this.minute_el = options.minute_el || "#countdown .minutes";
+		this.second_el = options.second_el || "#countdown .seconds";
+		this.ms_el     = options.ms_el     || "#countdown .milliseconds";
+
+		console.log(this);
+
+		this.init();
+	};
+
+	Counter.prototype.init = function() {
+		var self = this;
+
+		window.onload = function() {
+			self.day_el    = document.querySelector( self.day_el );
+			self.hour_el   = document.querySelector( self.hour_el );
+			self.minute_el = document.querySelector( self.minute_el );
+			self.second_el = document.querySelector( self.second_el );
+			self.ms_el     = document.querySelector( self.ms_el );
+
+			self.render_loop();
 		}
 	};
-	
-	var render_loop = function() {
+
+	Counter.prototype.render = function() {
 		now = new Date()
 		var text = document.querySelectorAll(".row");
 		var party_container = document.querySelector(".dance");
 		
-		if ( next_friday.getDate() === now.getDate() && now.getTime() > next_friday.getTime() ) {			
+		if ( this.target_time.getDate() === now.getDate() && now.getTime() > this.target_time.getTime() ) {			
 			for ( var i = 0, il = text.length; i < il; i++ ) {
 				var el = text[i];
 				
@@ -38,7 +65,7 @@
 		party_container.style.display = "none";
 		
 		
-		var diff = next_friday - now;
+		var diff = this.target_time - now;
 	
 		var years   = Math.floor(diff/31536000000),
 			months  = Math.floor((diff % 31536000000)/2628000000),
@@ -55,43 +82,38 @@
 		if ( ms < 10 ) ms = "00" + ms;
 		else if ( ms < 100 ) ms = "0" + ms;
 		
-		day_el.innerHTML    = days;
-		hour_el.innerHTML   = hours;
-		minute_el.innerHTML = minutes;
-		second_el.innerHTML = seconds;
-		ms_el.innerHTML     = ms;
+		this.day_el.innerHTML    = days;
+		this.hour_el.innerHTML   = hours;
+		this.minute_el.innerHTML = minutes;
+		this.second_el.innerHTML = seconds;
+		this.ms_el.innerHTML     = ms;
+	};
+
+	Counter.prototype.calculate_target_time = function() {
+		var date = new Date();
+		
+		for ( var i = 0; i < 8; i++ ) {
+			if ( date.getDay() === this.target_day ) {
+				date.setHours(this.target_hour);
+				date.setMinutes(this.target_minute);
+				date.setSeconds(this.target_second);
+				date.setMilliseconds(00);
+
+				return date;
+				
+			}
+
+			else date.setDate(date.getDate()+1);
+		}
+	};
+
+	Counter.prototype.render_loop = function() {
+		var self = this;
+		self.render();
+		setTimeout(function() { self.render_loop.call(self) }, 16);
 	};
 
 
-	var now = new Date(),
-		next_friday = find_next_friday();
-		next_friday = new Date( new Date().getTime() + 5000 );
-
-	next_friday.setHours(16);
-	next_friday.setMinutes(00);
-	next_friday.setSeconds(00);
-	next_friday.setMilliseconds(00);
-	
-	var day_el,
-		hour_el,
-		minute_el,
-		second_el,
-		ms_el;
-		
-		
-	window.onload = function() {
-		day_el    = document.querySelector("#countdown .days");
-		hour_el   = document.querySelector("#countdown .hours");
-		minute_el = document.querySelector("#countdown .minutes");
-		second_el = document.querySelector("#countdown .seconds");
-		ms_el     = document.querySelector("#countdown .milliseconds");
-	
-		
-		
-		(function anim_loop() {
-			render_loop();
-			setTimeout(anim_loop, 16);
-		})();
-	}
+	var party_countdown = new Counter();
 
 }) ();
