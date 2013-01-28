@@ -18,9 +18,14 @@
 		this.second_el = options.second_el || "#countdown .seconds";
 		this.ms_el     = options.ms_el     || "#countdown .milliseconds";
 
-		console.log(this);
+		this.events = options.events || [];
+
+		this.last_time = 0;
 
 		this.init();
+
+
+		this.debug_time = new Date();
 	};
 
 	Counter.prototype.init = function() {
@@ -38,32 +43,20 @@
 	};
 
 	Counter.prototype.render = function() {
-		now = new Date()
-		var text = document.querySelectorAll(".row");
-		var party_container = document.querySelector(".dance");
-		
-		if ( this.target_time.getDate() === now.getDate() && now.getTime() > this.target_time.getTime() ) {			
-			for ( var i = 0, il = text.length; i < il; i++ ) {
-				var el = text[i];
-				
-				el.style.display = "none";
+		var now = new Date()
+
+		for ( var i = 0, il = this.events.length; i < il; i++ ) {
+			var ev = this.events[i];
+
+			var time = ev.time;
+
+			if ( typeof time === "function" )
+				time = time(this.debug_time);
+
+			if ( time < now.getTime() && time > this.last_time.getTime() ) {
+				ev.callback.call(this);
 			}
-			
-			party_container.style.display = "block";
-			if ( now % 2 === 0 )
-				party_container.style.color = "rgb(" + (Math.floor(Math.random() * 255)) + ", " + (Math.floor(Math.random() * 255)) + ", " + (Math.floor(Math.random() * 255)) + ")";
-			
-			
-			
-			return;
-		}
-		for ( var i = 0, il = text.length; i < il; i++ ) {
-			var el = text[i];
-			
-			el.style.display = "block";
-		}
-		party_container.style.display = "none";
-		
+		}		
 		
 		var diff = this.target_time - now;
 	
@@ -87,6 +80,8 @@
 		this.minute_el.innerHTML = minutes;
 		this.second_el.innerHTML = seconds;
 		this.ms_el.innerHTML     = ms;
+
+		this.last_time = now;
 	};
 
 	Counter.prototype.calculate_target_time = function() {
@@ -114,6 +109,26 @@
 	};
 
 
-	var party_countdown = new Counter();
+	var party_countdown = new Counter({
+		events: [
+			{
+				time: function( time ) { return new Date( time.getTime() + 1000 ) },
+				callback: function( goal ) {
+					document.querySelector(".labels").style.display = "none";
+					document.querySelector(".counters").style.display = "none";
+
+					document.querySelector(".dance").style.display = "block";
+				}
+			}, {
+				time: function( time ) { return new Date( time.getTime() + 2000 ) },
+				callback: function( goal ) {
+					document.querySelector(".labels").style.display = "block";
+					document.querySelector(".counters").style.display = "block";
+
+					document.querySelector(".dance").style.display = "none";
+				}
+			}
+		]
+	});
 
 }) ();
